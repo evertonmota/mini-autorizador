@@ -41,7 +41,7 @@ public class CardController {
     @PostMapping
     public ResponseEntity<CardDTO> salvar( @Valid  @RequestBody CardDTO objDto){ // Objeto Json convertido para o java automaticamente.
 
-        LOGGER.info("Aplicação Startada.");
+        LOGGER.debug("Recebendo Cartão.");
 
         Card obj = objDto.toEntity();
         obj = service.salvar(obj);
@@ -51,6 +51,8 @@ public class CardController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(obj.getNumeroCartao())
                 .toUri();
+        LOGGER.info("Cartão criado com sucesso.");
+
         return ResponseEntity.created(uri).body(cardDTO);
         //return ResponseEntity.ok(service.salvar());
     }

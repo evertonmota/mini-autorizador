@@ -4,9 +4,12 @@ package com.evertonmota.autorizador.repository;
 import com.evertonmota.autorizador.entity.Card;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 // import org.springframework.data.mongodb.repository.MongoRepository;
 
 import javax.swing.text.html.Option;
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,4 +21,9 @@ public interface CardRepository  extends JpaRepository<Card, UUID> {
     Optional<Card> getByNumeroCartao(String s);
 
     Card save(Card card);
+
+    @Modifying
+    @Query("update Card c set c.saldo = c.saldo - ?1 where c.numeroCartao = ?2  and c.senha = ?3")
+    void updateBalance(BigDecimal valor , String numeroCartao, String senha) ;
+
 }

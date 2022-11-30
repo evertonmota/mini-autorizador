@@ -29,7 +29,7 @@ class MiniAutorizadorApplicationTests {
 
     @Test
     @DisplayName("Deve salvar um cartao com 500 de saldo com sucesso.")
-    void saveSucess() {
+    void saveSuccess() {
         //SETUP
         //execução
 
@@ -128,6 +128,44 @@ class MiniAutorizadorApplicationTests {
 
         //verificação
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Deve retornar a transação quando o numero do cartão não existir.")
+    void transactionSuccess() {
+
+        //SETUP
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.put("Content-Type", List.of("application/json"));
+        HttpEntity<String> body = new HttpEntity<>("""
+                {				
+                    "numeroCartao": "6549873025634501",
+                    "senha": "1234"
+                }""", headers);
+
+        ResponseEntity<String> response = client.exchange("/cartoes", HttpMethod.POST, body, String.class);
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+
+
+        // Execução
+        MultiValueMap<String, String> headersTrancation = new HttpHeaders();
+        headersTrancation.put("Content-Type", List.of("application/json"));
+        HttpEntity<String> bodyTransaction = new HttpEntity<>("""
+                {				
+                    "numeroCartao": "6549873025634501",
+                    "senhaCartao": "1234",
+                    "valor": 10.00
+                }""", headersTrancation);
+
+        ResponseEntity<String> responseTransaction = client.exchange("/transacoes", HttpMethod.POST, bodyTransaction, String.class);
+
+
+        //verificação
+        Assertions.assertEquals(HttpStatus.CREATED, responseTransaction.getStatusCode());
+        Optional<Card> card = this.cardRepository.getByNumeroCartao("6549873025634501");
+        Assertions.assertTrue(card.isPresent());
+        Assertions.assertEquals(new BigDecimal("490.00"), card.get().getSaldo());
     }
 
 }

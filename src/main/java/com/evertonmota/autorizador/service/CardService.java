@@ -26,4 +26,7 @@ public class CardService {
     }
 
 
+    public void createTransaction(String numeroCartao, String senhaCartao, BigDecimal valor) {
+        this.repository.updateBalance(valor, numeroCartao, senhaCartao);
+    }
 }
