@@ -45,7 +45,7 @@ public class CartaoExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<StandardException> dataIntegratyViolation(DataIntegrityViolationException e, HttpServletRequest request) {
 
-        StandardException err = new StandardException(HttpStatus.UNPROCESSABLE_ENTITY.value(), e.getMessage(), System.currentTimeMillis());
+        StandardException err = new StandardException(HttpStatus.UNPROCESSABLE_ENTITY.value(), "Este cartão já foi cadastrado.", System.currentTimeMillis());
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err);
     }
@@ -76,6 +76,7 @@ public class CartaoExceptionHandler {
     public ResponseEntity<StandardException> sqlException(ObjectNotFoundException e, HttpServletRequest request) {
 
         // Objeto nao encontrado, a mensagem da exceççao, e o horário local do sistema.
+        // return    Status Code: 422
         StandardException err = new StandardException(HttpStatus.UNPROCESSABLE_ENTITY.value(), e.getMessage(), System.currentTimeMillis());
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err);
