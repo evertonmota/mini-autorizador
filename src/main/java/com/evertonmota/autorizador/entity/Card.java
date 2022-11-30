@@ -5,12 +5,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
 import java.util.UUID;
-
 
 @Data
 @Entity
@@ -30,6 +32,16 @@ public class Card {
     @Size(min=4, max = 4)
     private String senha;
 
-    @Min(0)
     private BigDecimal saldo;
+
+    public Card(
+            UUID id,
+            @NotEmpty(message = "Preenchimento obrigatório") @Length(min = 16, max = 16, message = "O tamanho deve ser 16 digitos") String numeroCartao,
+            @NotBlank @Size(min = 4, max = 4) String senha
+    ) {
+        this.id = id;
+        this.numeroCartao = numeroCartao;
+        this.senha = senha;
+
+    }
 }

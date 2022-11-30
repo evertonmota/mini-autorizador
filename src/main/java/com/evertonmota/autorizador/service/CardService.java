@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 @AllArgsConstructor
 @Service
@@ -23,4 +22,6 @@ public class CardService {
     public Card findNumeroCartao(String numeroCartao) {
         return this.repository.getByNumeroCartao(numeroCartao);
     }
+
+
 }
