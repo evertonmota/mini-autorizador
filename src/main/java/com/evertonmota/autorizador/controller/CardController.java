@@ -45,13 +45,14 @@ public class CardController {
 
         Card obj = objDto.toEntity();
         obj = service.salvar(obj);
+        obj.toDto();
 
         //Retorna a uri do novo recurso inserido
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(obj.getNumeroCartao())
                 .toUri();
-        return ResponseEntity.created(uri).build();
-        //return ResponseEntity.ok(service.salvar(obj));
+        return ResponseEntity.created(uri).body(obj);
+        //return ResponseEntity.ok(service.salvar());
     }
 
     @RequestMapping(value="/cartoes/{numeroCartao}", method = RequestMethod.GET)

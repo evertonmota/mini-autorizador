@@ -14,7 +14,7 @@ public class CardService {
     private final CardRepository repository;
 
     public Card salvar(Card card) {
-        card.setSaldo(new BigDecimal( "500.00"));
+        card.setSaldo(new BigDecimal( "500"));
 
         return this.repository.save(card);
     }

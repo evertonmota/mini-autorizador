@@ -7,32 +7,41 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.util.MultiValueMap;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 // Este Teste funcional depende do banco rodando.
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class MiniAutorizadorApplicationTests {
 
-	@Autowired
-	TestRestTemplate client ;
-	private CardRepository cardRepository;
+    @Autowired
+    TestRestTemplate client;
 
-	@Test
-	void contextLoads() {
-	//SETUP
-		//execução
-		ResponseEntity<String> response = client.postForEntity("http://localhost:8080/cartoes", """
-				{
-				
-				    "numeroCartao": "6549873025634501",
-				    "senha": "1234"
-				}""", String.class);
-		//verificação
-		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+    @Autowired
+    private CardRepository cardRepository;
 
-		Card card = this.cardRepository.getByNumeroCartao("6549873025634501");
-		Assertions.assertEquals(500,card.getSaldo());
-	}
+    @Test
+    void contextLoads() {
+        //SETUP
+        //execução
+
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.put("Content-Type", List.of("application/json"));
+        HttpEntity<String> body = new HttpEntity<>("""
+                {				
+                    "numeroCartao": "6549873025634501",
+                    "senha": "1234"
+                }""", headers);
+
+        ResponseEntity<String> response = client.exchange("/cartoes", HttpMethod.POST, body, String.class);
+        //verificação
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+        Card card = this.cardRepository.getByNumeroCartao("6549873025634501");
+        Assertions.assertEquals(new BigDecimal("500.00"), card.getSaldo());
+    }
 
 }

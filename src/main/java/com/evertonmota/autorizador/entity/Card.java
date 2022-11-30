@@ -1,5 +1,6 @@
 package com.evertonmota.autorizador.entity;
 
+import com.evertonmota.autorizador.dto.CardDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -43,5 +44,12 @@ public class Card {
         this.numeroCartao = numeroCartao;
         this.senha = senha;
 
+    }
+
+    public CardDTO toDto() {
+        return new CardDTO(this.getId() , this.getNumeroCartao(), this.getSenha() );
+    }
+
+    public Card() {
     }
 }
