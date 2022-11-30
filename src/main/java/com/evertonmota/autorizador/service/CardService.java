@@ -18,7 +18,7 @@ public class CardService {
         return this.repository.save(card);
     }
 
-    public Card findNumeroCartao(String numeroCartao) {
+    public Card findByNumeroCartao(String numeroCartao) {
         return this.repository.getByNumeroCartao(numeroCartao);
     }
 

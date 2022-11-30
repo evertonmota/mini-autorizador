@@ -1,9 +1,12 @@
 package com.evertonmota.autorizador.controller.exceptionhandler;
 
+import com.evertonmota.autorizador.controller.CardController;
 import com.evertonmota.autorizador.service.exception.AuthorizationException;
 import com.evertonmota.autorizador.service.exception.DataIntegrityException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.hibernate.ObjectNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,8 @@ import java.sql.SQLException;
 @ControllerAdvice
 public class CartaoExceptionHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CartaoExceptionHandler.class);
+
     public static final String MSG_ERRO_GENERICO = "Ocorreu um erro inesperado no sistema. Tente novamente e se o problema persistir,"
             + " entre em contato com o administrador.";
 
@@ -26,6 +31,8 @@ public class CartaoExceptionHandler {
     @ExceptionHandler(ObjectNotFoundException.class)
     // Para indicar que é um tratador de exceções deste tipo de exceção.
     public ResponseEntity<StandardException> objectNotFound(ObjectNotFoundException e, HttpServletRequest request) {
+
+        LOGGER.error(" ObjectNotFoundException " , e);
 
         // Objeto nao encontrado, a mensagem da exceççao, e o horário local do sistema.
         StandardException err = new StandardException(HttpStatus.NOT_FOUND.value(), e.getMessage(), System.currentTimeMillis());
@@ -37,6 +44,8 @@ public class CartaoExceptionHandler {
     @ExceptionHandler(DataIntegrityException.class)
     public ResponseEntity<StandardException> dataIntegraty(DataIntegrityException e, HttpServletRequest request) {
 
+        LOGGER.error(" DataIntegrityException " , e);
+
         StandardException err = new StandardException(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
@@ -45,6 +54,8 @@ public class CartaoExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<StandardException> dataIntegratyViolation(DataIntegrityViolationException e, HttpServletRequest request) {
 
+        LOGGER.error(" DataIntegrityViolationException " , e);
+
         StandardException err = new StandardException(HttpStatus.UNPROCESSABLE_ENTITY.value(), "Este cartão já foi cadastrado.", System.currentTimeMillis());
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err);
@@ -52,6 +63,8 @@ public class CartaoExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardException> validation(MethodArgumentNotValidException e, HttpServletRequest request) {
+
+        LOGGER.error(" MethodArgumentNotValidException " , e);
 
         ValidationException err = new ValidationException(HttpStatus.BAD_REQUEST.value(), "Erro de validação", System.currentTimeMillis());
         //  acesso todos erros de campo, que aconteceream nesta exceção.
@@ -66,6 +79,8 @@ public class CartaoExceptionHandler {
     @ExceptionHandler(AuthorizationException.class) // Para indicar que é um tratador de exceções deste tipo de exceção.
     public ResponseEntity<StandardException> Authorization(ObjectNotFoundException e, HttpServletRequest request) {
 
+        LOGGER.error(" AuthorizationException " , e);
+
         // Objeto nao encontrado, a mensagem da exceççao, e o horário local do sistema.
         StandardException err = new StandardException(HttpStatus.FORBIDDEN.value(), e.getMessage(), System.currentTimeMillis());
 
@@ -74,6 +89,8 @@ public class CartaoExceptionHandler {
 
     @ExceptionHandler(SQLException.class) // Para indicar que é um tratador de exceções deste tipo de exceção.
     public ResponseEntity<StandardException> sqlException(ObjectNotFoundException e, HttpServletRequest request) {
+
+        LOGGER.error(" SQLException " , e);
 
         // Objeto nao encontrado, a mensagem da exceççao, e o horário local do sistema.
         // return    Status Code: 422

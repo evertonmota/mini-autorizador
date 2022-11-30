@@ -39,24 +39,26 @@ public class CardController {
     */
 
     @PostMapping
-    public ResponseEntity<Card> salvar( @Valid  @RequestBody CardDTO objDto){ // Objeto Json convertido para o java automaticamente.
+    public ResponseEntity<CardDTO> salvar( @Valid  @RequestBody CardDTO objDto){ // Objeto Json convertido para o java automaticamente.
 
         LOGGER.info("Aplicação Startada.");
 
         Card obj = objDto.toEntity();
         obj = service.salvar(obj);
-        obj.toDto();
+        CardDTO cardDTO = obj.toDto();
 
         //Retorna a uri do novo recurso inserido
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(obj.getNumeroCartao())
                 .toUri();
-        return ResponseEntity.created(uri).body(obj);
+        return ResponseEntity.created(uri).body(cardDTO);
         //return ResponseEntity.ok(service.salvar());
     }
 
-    @RequestMapping(value="/cartoes/{numeroCartao}", method = RequestMethod.GET)
-    public ResponseEntity<Card> find(@PathVariable String  numeroCartao){
-        return ResponseEntity.ok(service.findNumeroCartao(numeroCartao));
+    @RequestMapping(value="/{numeroCartao}", method = RequestMethod.GET)
+    public ResponseEntity<CardDTO> find(@PathVariable String  numeroCartao){
+        Card card = service.findByNumeroCartao(numeroCartao);
+        CardDTO cardDTO = card.toDto();
+        return ResponseEntity.ok(cardDTO);
     }
 }

@@ -49,7 +49,7 @@ public class Card {
     }
 
     public CardDTO toDto() {
-        return new CardDTO(this.getId() , this.getNumeroCartao(), this.getSenha() );
+        return new CardDTO(this.getId() , this.getNumeroCartao(), this.getSenha(), this.getSaldo());
     }
 
     public Card() {

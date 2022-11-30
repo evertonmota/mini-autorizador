@@ -1,5 +1,6 @@
 package com.evertonmota.autorizador;
 
+import com.evertonmota.autorizador.dto.CardDTO;
 import com.evertonmota.autorizador.entity.Card;
 import com.evertonmota.autorizador.repository.CardRepository;
 import org.junit.jupiter.api.Assertions;
@@ -78,4 +79,29 @@ class MiniAutorizadorApplicationTests {
         //verificação
         Assertions.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response2.getStatusCode());
     }
+
+    @Test
+    @DisplayName("Deve retornar o saldo de um dado cartao.")
+    void getBalance() {
+
+        //SETUP
+
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.put("Content-Type", List.of("application/json"));
+        HttpEntity<String> body = new HttpEntity<>("""
+                {				
+                    "numeroCartao": "6549873025634501",
+                    "senha": "1234"
+                }""", headers);
+
+        ResponseEntity<String> response = client.exchange("/cartoes", HttpMethod.POST, body, String.class);
+
+        //execução
+        var responseEntity = client.getForEntity("/cartoes/6549873025634501", CardDTO.class);
+
+        //verificação
+        Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        Assertions.assertEquals(new BigDecimal("500.00"), responseEntity.getBody().getSaldo());
+    }
+
 }

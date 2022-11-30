@@ -30,7 +30,9 @@ public class CardDTO implements Serializable {
     @Length(min = 4 ,  max = 4, message = "O tamanho deve ser igual a 4 digitos")
     private String senha;
 
+    private BigDecimal saldo;
+
     public Card toEntity() {
-        return new Card(this.getId() , this.getNumeroCartao(), this.getSenha() );
+        return new Card(this.getId() , this.getNumeroCartao(), this.getSenha());
     }
 }
