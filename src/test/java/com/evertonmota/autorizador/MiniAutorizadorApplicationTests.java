@@ -1,5 +1,6 @@
 package com.evertonmota.autorizador;
 
+import com.evertonmota.autorizador.controller.exceptionhandler.StandardException;
 import com.evertonmota.autorizador.dto.CardDTO;
 import com.evertonmota.autorizador.entity.Card;
 import com.evertonmota.autorizador.repository.CardRepository;
@@ -14,6 +15,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 // Este Teste funcional depende do banco rodando.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -43,8 +45,9 @@ class MiniAutorizadorApplicationTests {
         //verificação
         Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
-        Card card = this.cardRepository.getByNumeroCartao("6549873025634501");
-        Assertions.assertEquals(new BigDecimal("500.00"), card.getSaldo());
+        Optional<Card> card = this.cardRepository.getByNumeroCartao("6549873025634501");
+        Assertions.assertTrue(card.isPresent());
+        Assertions.assertEquals(new BigDecimal("500.00"), card.get().getSaldo());
     }
 
 
@@ -102,6 +105,29 @@ class MiniAutorizadorApplicationTests {
         //verificação
         Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Assertions.assertEquals(new BigDecimal("500.00"), responseEntity.getBody().getSaldo());
+    }
+
+    @Test
+    @DisplayName("Deve retornar http 404 quando o numero do cartão não existir.")
+    void getBalanceWhenCardNotFound() {
+
+        //SETUP
+
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.put("Content-Type", List.of("application/json"));
+        HttpEntity<String> body = new HttpEntity<>("""
+                {				
+                    "numeroCartao": "6549873025634501",
+                    "senha": "1234"
+                }""", headers);
+
+        ResponseEntity<String> response = client.exchange("/cartoes", HttpMethod.POST, body, String.class);
+
+        //execução
+        var responseEntity = client.getForEntity("/cartoes/6549873025634502", StandardException.class);
+
+        //verificação
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
 
 }

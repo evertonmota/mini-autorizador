@@ -2,6 +2,7 @@ package com.evertonmota.autorizador.service;
 
 import com.evertonmota.autorizador.entity.Card;
 import com.evertonmota.autorizador.repository.CardRepository;
+import com.evertonmota.autorizador.service.exception.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,9 @@ public class CardService {
     }
 
     public Card findByNumeroCartao(String numeroCartao) {
-        return this.repository.getByNumeroCartao(numeroCartao);
+
+        return this.repository.getByNumeroCartao(numeroCartao)
+                .orElseThrow( () -> new ObjectNotFoundException("Cartão não encontrado : " +numeroCartao));
     }
 
 
