@@ -1,6 +1,7 @@
 package com.evertonmota.autorizador.entity;
 
 import com.evertonmota.autorizador.dto.CardDTO;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -26,6 +27,7 @@ public class Card {
 
     @NotBlank
     @Size(min=16, max = 16)
+    @Column(unique = true)
     private String numeroCartao;
 
 

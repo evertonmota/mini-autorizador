@@ -3,6 +3,7 @@ package com.evertonmota.autorizador;
 import com.evertonmota.autorizador.entity.Card;
 import com.evertonmota.autorizador.repository.CardRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +25,8 @@ class MiniAutorizadorApplicationTests {
     private CardRepository cardRepository;
 
     @Test
-    void contextLoads() {
+    @DisplayName("Deve salvar um cartao com 500 de saldo com sucesso.")
+    void saveSucess() {
         //SETUP
         //execução
 
@@ -44,4 +46,36 @@ class MiniAutorizadorApplicationTests {
         Assertions.assertEquals(new BigDecimal("500.00"), card.getSaldo());
     }
 
+
+    @Test
+    @DisplayName("Deve retornar http 422 ao salvar o cartao com o numero ja existente.")
+    void duplicateCard() {
+
+        //SETUP
+        //execução
+
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.put("Content-Type", List.of("application/json"));
+        HttpEntity<String> body = new HttpEntity<>("""
+                {				
+                    "numeroCartao": "6549873025634501",
+                    "senha": "1234"
+                }""", headers);
+
+        client.exchange("/cartoes", HttpMethod.POST, body, String.class);
+
+
+        MultiValueMap<String, String> headers2 = new HttpHeaders();
+        headers2.put("Content-Type", List.of("application/json"));
+        HttpEntity<String> body2 = new HttpEntity<>("""
+                {				
+                    "numeroCartao": "6549873025634501",
+                    "senha": "1234"
+                }""", headers2);
+
+        ResponseEntity<String> response2 = client.exchange("/cartoes", HttpMethod.POST, body2, String.class);
+
+        //verificação
+        Assertions.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response2.getStatusCode());
+    }
 }
