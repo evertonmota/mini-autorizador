@@ -23,7 +23,12 @@ public interface CardRepository  extends JpaRepository<Card, UUID> {
     Card save(Card card);
 
     @Modifying
-    @Query("update Card c set c.saldo = c.saldo - ?1 where c.numeroCartao = ?2  and c.senha = ?3")
+    @Query("update Card c set c.saldo = c.saldo - ?1 where c.numeroCartao = ?2  and c.senha = ?3 and (c.saldo > 0 and c.saldo > ?1)" )
     void updateBalance(BigDecimal valor , String numeroCartao, String senha) ;
 
+    @Query("select c from Card c where c.numeroCartao = ?1  and c.senha = ?2 " )
+    Optional<Card> findByNumeroCartaoAndSenha(String numeroCartao, String senhaCartao);
+
+    @Query("select c from Card c where c.numeroCartao = ?1  and (c.saldo > 0 and c.saldo > ?2)" )
+    Optional<Card> findByNumeroCartaoAndSaldo(String numeroCartao, BigDecimal valor);
 }

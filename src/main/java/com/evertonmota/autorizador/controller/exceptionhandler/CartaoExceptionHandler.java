@@ -61,6 +61,17 @@ public class CartaoExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err);
     }
 
+    @ExceptionHandler(TransactionRequestException.class)
+    public ResponseEntity<StandardException> dataIntegratyViolation(TransactionRequestException e, HttpServletRequest request) {
+
+        LOGGER.error(" TransactionRequestException " , e);
+
+        StandardException err = new StandardException(HttpStatus.UNPROCESSABLE_ENTITY.value(), e.getMessage(), System.currentTimeMillis());
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err);
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardException> validation(MethodArgumentNotValidException e, HttpServletRequest request) {
 
