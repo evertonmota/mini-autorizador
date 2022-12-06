@@ -12,8 +12,8 @@ services:
   #    MONGO_INITDB_DATABASE: miniautorizador
   #    MONGO_INITDB_ROOT_USERNAME: user
   #    MONGO_INITDB_ROOT_PASSWORD: password
-  #  volumes:
-  - ./scripts/init.js:/docker-entrypoint-initdb.d/init.js:ro
+  #volumes:
+    #- ./scripts/init.js:/docker-entrypoint-initdb.d/init.js:ro
 
   mysql:
     image: mysql:5.7

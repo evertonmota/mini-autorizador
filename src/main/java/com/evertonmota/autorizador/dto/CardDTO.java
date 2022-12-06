@@ -1,12 +1,13 @@
 package com.evertonmota.autorizador.dto;
 
 import com.evertonmota.autorizador.entity.Card;
-import jakarta.validation.constraints.NotEmpty;
+//import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
